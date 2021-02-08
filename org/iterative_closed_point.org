@@ -1,5 +1,0 @@
-:PROPERTIES:
-:ID:       aa122e29-9335-4922-898d-43ddb1c82451
-:END:
-#+roam_alias: ICP
-#+title: Iterative Closed Point
