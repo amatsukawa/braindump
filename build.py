@@ -1,10 +1,7 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i python3 -p python3 ninja
-
 import glob
 from pathlib import Path
 
-files = glob.glob("org/*.org")
+files = glob.glob("roam/*.org")
 
 with open('build.ninja', 'w') as ninja_file:
     ninja_file.write("""
@@ -14,6 +11,8 @@ rule org2md
 """)
     
     for f in files:
+        if f.endswith("setup.org"):
+            continue
         path = Path(f)
         output_file = f"content/posts/{path.with_suffix('.md').name}"
         ninja_file.write(f"""
