@@ -1,6 +1,6 @@
 baseURL = "https://braindump.jethro.dev/"
 languageCode = "en-us"
-title = "Jethro's Braindump"
+title = "Braindump"
 theme = "cortex"
 
 [params]

@@ -5,12 +5,12 @@ from pathlib import Path
 
 NINJA_HEADER = """
 rule org2md
-  command = emacs --batch -l ~/.emacs.d/init.el -l publish.el --eval \"(jethro/publish \\"$in\\")"
+  command = output=`emacs --batch -l ~/.emacs.d/init.el -l publish.el --eval \"(jethro/publish \\"$in\\")" 2>&1` || echo $output
   description = org2md $in
 """
 
 def get_files():
-    return set(glob.glob("roam/**.org"))
+    return set(glob.glob("roam/zettel/*.org") + glob.glob("roam/lit/*.org"))
 
 def write_build(files):
     with open('build.ninja', 'w') as ninja_file:
@@ -25,22 +25,16 @@ def write_build(files):
 
 def ninja(files):
     write_build(files)
-    subprocess.call(["ninja"])
-
-
-def monitor():
-    # TODO: can use kernel hooks, but seems to interact weirdly with some things.
-    files = None
+    time.sleep(5)
     while True:
-        new_files = get_files()
-        if files is None or files != new_files:
-            files = new_files
-            ninja(new_files)
-        time.sleep(10)
-
+        try:
+            subprocess.check_call(["ninja"])
+            break
+        except:
+            print("failed, trying again soon")
+            time.sleep(10)
 
 
 if __name__ == "__main__":
-    subprocess.Popen(["hugo", "server", "--port", "1111"])
-    print("starting monitor.")
-    monitor()
+    files = get_files()
+    ninja(files)
